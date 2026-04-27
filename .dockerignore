@@ -1,0 +1,7 @@
+node_modules
+.git
+.env*
+apps/client/dist
+apps/server/dist
+**/.vscode
+**/.DS_Store
