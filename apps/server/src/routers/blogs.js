@@ -38,7 +38,12 @@ blogsRouter.patch("/:blogId", async (req, res) => {
 
   const blog = await Blog.findByIdAndUpdate(
     req.params.blogId,
-    { title, author, url, likes },
+    {
+      title,
+      author,
+      url,
+      likes,
+    },
     { runValidators: true, returnDocument: "after" },
   );
   if (!blog) {

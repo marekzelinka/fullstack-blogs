@@ -4,6 +4,7 @@ import helmet from "helmet";
 import mongoose from "mongoose";
 import morgan from "morgan";
 
+import { config } from "./core/config.js";
 import { middleware } from "./core/middleware.js";
 import { blogsRouter } from "./routers/blogs.js";
 
@@ -11,7 +12,7 @@ export const app = express();
 
 app.use(helmet());
 app.use(cors());
-app.use(morgan("dev"));
+app.use(morgan("dev", { skip: () => config.NODE_ENV === "test" }));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

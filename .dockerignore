@@ -3,5 +3,6 @@ node_modules
 .env*
 apps/client/dist
 apps/server/dist
+coverage
 **/.vscode
 **/.DS_Store

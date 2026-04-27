@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 
 const blogSchema = new mongoose.Schema({
-  title: String,
+  title: { type: String, required: [true, "Title is required"] },
   author: String,
-  url: String,
+  url: { type: String, required: [true, "Url is missing"] },
   likes: { type: Number, default: 0 },
 });
 
