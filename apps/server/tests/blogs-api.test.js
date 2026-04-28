@@ -63,6 +63,27 @@ describe("when there are initially some blogs saved", () => {
     });
   });
 
+  describe("liking a blog", () => {
+    test("succeeds by incrementing the likes property by 1", async () => {
+      const blogsAtStart = await blogTestUtils.getSaved();
+      const blogToLike = blogsAtStart[0];
+
+      const res = await api.post(`/api/blogs/${blogToLike.id}/likes`);
+      expect(res.status).toBe(200);
+      expect(res.headers["content-type"]).toMatch(/json/);
+      expect(res.body.likes).toBe(blogToLike.likes + 1);
+    });
+
+    test("fails with status 404 if blog does not exist", async () => {
+      const validNonexistingId = await blogTestUtils.nonExistingId();
+
+      const res = await api.post(`/api/blogs/${validNonexistingId}/likes`);
+      expect(res.status).toBe(404);
+      expect(res.headers["content-type"]).toMatch(/json/);
+      expect(res.body.error).toMatch(/blog not found/i);
+    });
+  });
+
   describe("viewing blogs", () => {
     test("blogs are returned as json", async () => {
       const res = await api.get("/api/blogs");
@@ -120,10 +141,15 @@ describe("when there are initially some blogs saved", () => {
 
       const res = await api
         .patch(`/api/blogs/${blogToEdit.id}`)
-        .send({ likes: blogToEdit.likes + 1 });
+        .send({ title: "React patterns!", author: "Mike Chan", url: "https://reactpatterns.org/" });
       expect(res.status).toBe(200);
       expect(res.headers["content-type"]).toMatch(/json/);
-      expect(res.body).toStrictEqual({ ...blogToEdit, likes: blogToEdit.likes + 1 });
+      expect(res.body).toStrictEqual({
+        ...blogToEdit,
+        title: "React patterns!",
+        author: "Mike Chan",
+        url: "https://reactpatterns.org/",
+      });
     });
 
     test("fails with status 404 if blog does not exist", async () => {
@@ -173,6 +199,39 @@ describe("when there are initially some blogs saved", () => {
       expect(res.status).toBe(400);
       expect(res.headers["content-type"]).toMatch(/json/);
       expect(res.body.error).toMatch(/malformatted id/i);
+    });
+  });
+
+  describe("unliking a blog", () => {
+    test("succeeds by decrementing the likes property by 1", async () => {
+      const blogsAtStart = await blogTestUtils.getSaved();
+      const blogToUnlike = blogsAtStart[0];
+
+      const res = await api.delete(`/api/blogs/${blogToUnlike.id}/likes`);
+      expect(res.status).toBe(200);
+      expect(res.headers["content-type"]).toMatch(/json/);
+      expect(res.body.likes).toBe(blogToUnlike.likes - 1);
+    });
+
+    test("fails with status 400 if likes would go below 0", async () => {
+      const blogsAtStart = await blogTestUtils.getSaved();
+      const blogToUnlike = blogsAtStart[0];
+      // Manually set likes to 0
+      await Blog.findByIdAndUpdate(blogToUnlike.id, { likes: 0 });
+
+      const res = await api.delete(`/api/blogs/${blogToUnlike.id}/likes`);
+      expect(res.status).toBe(400);
+      expect(res.headers["content-type"]).toMatch(/json/);
+      expect(res.body.error).toMatch(/cannot unlike a blog with 0 likes/i);
+    });
+
+    test("fails with status 404 if blog does not exist", async () => {
+      const validNonexistingId = await blogTestUtils.nonExistingId();
+
+      const res = await api.delete(`/api/blogs/${validNonexistingId}/likes`);
+      expect(res.status).toBe(404);
+      expect(res.headers["content-type"]).toMatch(/json/);
+      expect(res.body.error).toMatch(/blog not found/i);
     });
   });
 });

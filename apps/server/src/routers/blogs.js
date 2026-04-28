@@ -16,6 +16,21 @@ blogsRouter.post("/", async (req, res) => {
   res.status(201).json(blog);
 });
 
+blogsRouter.post("/:blogId/likes", async (req, res) => {
+  const blog = await Blog.findByIdAndUpdate(
+    req.params.blogId,
+    { $inc: { likes: 1 } },
+    { returnDocument: "after" },
+  );
+  if (!blog) {
+    res.status(404).json({ error: "Blog not found" });
+
+    return;
+  }
+
+  res.json(blog);
+});
+
 blogsRouter.get("/", async (_req, res) => {
   const blogs = await Blog.find();
 
@@ -59,4 +74,28 @@ blogsRouter.delete("/:blogId", async (req, res) => {
   await Blog.findByIdAndDelete(req.params.blogId);
 
   res.status(204).end();
+});
+
+blogsRouter.delete("/:blogId/likes", async (req, res) => {
+  const blog = await Blog.findOneAndUpdate(
+    // Only decrement if likes is greater than 0
+    { _id: req.params.blogId, likes: { $gt: 0 } },
+    { $inc: { likes: -1 } },
+    { returnDocument: "after" },
+  );
+  if (!blog) {
+    // If blog is null, it's either not found or the blog already had 0 likes.
+    const blogExists = await Blog.findById(req.params.blogId);
+    if (!blogExists) {
+      res.status(404).json({ error: "Blog not found" });
+
+      return;
+    }
+
+    res.status(400).json({ error: "Cannot unlike a blog with 0 likes" });
+
+    return;
+  }
+
+  res.json(blog);
 });
