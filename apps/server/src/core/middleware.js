@@ -15,6 +15,13 @@ export const middleware = {
       res.status(400).json({ error: error.message });
 
       return;
+    } else if (error.code === 11000 || error.name === "MongoServerError") {
+      const key = Object.keys(error.keyValue)[0];
+      const field = key[0].toUpperCase() + key.slice(1);
+
+      res.status(400).json({ error: `${field} must be unique` });
+
+      return;
     }
 
     next(error);
