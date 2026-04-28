@@ -5,7 +5,7 @@ import { Blog } from "../models/blog.js";
 export const blogsRouter = express.Router();
 
 blogsRouter.post("/", async (req, res) => {
-  const { title, author, url } = req.body ?? {};
+  const { title, author, url } = req.body;
 
   const blog = await Blog.create({
     title,
@@ -34,7 +34,7 @@ blogsRouter.get("/:blogId", async (req, res) => {
 });
 
 blogsRouter.patch("/:blogId", async (req, res) => {
-  const { title, author, url, likes } = req.body ?? {};
+  const { title, author, url, likes } = req.body;
 
   const blog = await Blog.findByIdAndUpdate(
     req.params.blogId,
