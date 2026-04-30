@@ -26,5 +26,5 @@
     "*.{js,jsx,ts,tsx,mjs,cjs}": "pnpm run lint",
     "*": "oxfmt --no-error-on-unmatched-pattern"
   },
-  "packageManager": "pnpm@11.0.0-rc.5"
+  "packageManager": "pnpm@11.0.0"
 }

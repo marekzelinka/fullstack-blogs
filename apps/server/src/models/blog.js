@@ -4,7 +4,13 @@ const blogSchema = new mongoose.Schema({
   title: { type: String, required: [true, "Title is required"] },
   author: String,
   url: { type: String, required: [true, "Url is missing"] },
-  likes: { type: Number, default: 0 },
+  likes: { type: Number, default: 0, min: 0 },
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: [true, "A blog must belong to a user"],
+    immutable: [true, "Changing the owner of a blog is not allowed"],
+  },
 });
 
 blogSchema.set("toJSON", {

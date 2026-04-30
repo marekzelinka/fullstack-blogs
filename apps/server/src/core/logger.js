@@ -1,18 +1,17 @@
-import { config } from "./config.js";
+import { env } from "./config.js";
 
-export const logger = {
-  info: (...params) => {
-    if (config.NODE_ENV === "test") {
-      return;
-    }
+export function info(...params) {
+  if (env.NODE_ENV === "test") {
+    return;
+  }
 
-    console.log(...params);
-  },
-  error: (...params) => {
-    if (config.NODE_ENV === "test") {
-      return;
-    }
+  console.log(...params);
+}
 
-    return console.error(...params);
-  },
-};
+export function error(...params) {
+  if (env.NODE_ENV === "test") {
+    return;
+  }
+
+  return console.error(...params);
+}
