@@ -1,6 +1,15 @@
+import { loadEnvFile } from "node:process";
+
 import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
 import { afterAll, beforeAll, afterEach } from "vitest";
+
+// Only try to load the file if it exists locally
+try {
+  loadEnvFile("./apps/server/.env.local");
+} catch {
+  // Silence error in CI where file doesn't exist
+}
 
 let mongoServer;
 
