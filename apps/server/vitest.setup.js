@@ -2,9 +2,6 @@ import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
 import { afterAll, beforeAll, afterEach } from "vitest";
 
-// This ensures the env object has values before the app loads
-process.env.SECRET_KEY = "RLs4ndhhnSaZU1pDwZ9zo50fcbGQm9rcY2mbtIinJuM=";
-
 let mongoServer;
 
 // Spin up the in-memory DB
