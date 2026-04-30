@@ -8,7 +8,7 @@ const blogSchema = new mongoose.Schema({
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    required: [true, "A blog must belong to a user"],
+    required: [true, "A blog must belong to a owner"],
     immutable: [true, "Changing the owner of a blog is not allowed"],
   },
 });

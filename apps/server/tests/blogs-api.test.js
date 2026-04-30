@@ -119,7 +119,7 @@ describe("when there are initially some blogs seeded with a owner", () => {
   });
 
   describe("liking a blog", () => {
-    test("succeeds with likes incrementing by 1 and has populated owner", async () => {
+    test("succeeds with likes incrementing by 1", async () => {
       const blogsAtStart = await apiTestUtils.getBlogsInDb();
       const blogToLike = blogsAtStart[0];
 
@@ -213,7 +213,7 @@ describe("when there are initially some blogs seeded with a owner", () => {
   });
 
   describe("update of a blog", () => {
-    test("succeeds when owned by the user and return populated owner", async () => {
+    test("succeeds when owned by the user", async () => {
       const blogsAtStart = await apiTestUtils.getBlogsInDb();
       const blogToEdit = blogsAtStart[0];
       const updateData = {
@@ -363,7 +363,7 @@ describe("when there are initially some blogs seeded with a owner", () => {
   });
 
   describe("unliking a blog", () => {
-    test("succeeds by decrementing the likes property by 1 and returns the populated owner", async () => {
+    test("succeeds by decrementing the likes property by 1", async () => {
       const blogsAtStart = await apiTestUtils.getBlogsInDb();
       const blogToUnlike = blogsAtStart[0];
       // Ensure it has at least 1 like to start
