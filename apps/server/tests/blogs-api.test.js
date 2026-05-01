@@ -53,8 +53,8 @@ describe("when there are initially some blogs seeded with a owner", () => {
       expect(titles).toContain(newBlog.title);
 
       const userInDb = await User.findOne({ username: apiTestUtils.initialUser.username });
-      const userNoteIds = userInDb.blogs.map((id) => id.toString());
-      expect(userNoteIds).toContain(res.body.id);
+      const userBlogIds = userInDb.blogs.map((id) => id.toString());
+      expect(userBlogIds).toContain(res.body.id);
     });
 
     test("returns populated owner", async () => {
@@ -324,8 +324,8 @@ describe("when there are initially some blogs seeded with a owner", () => {
       expect(ids).not.toContain(blogToDelete.id);
 
       const userInDb = await User.findOne({ username: apiTestUtils.initialUser.username });
-      const userNoteIds = userInDb.blogs.map((id) => id.toString());
-      expect(userNoteIds).not.toContain(blogToDelete.id);
+      const userBlogIds = userInDb.blogs.map((id) => id.toString());
+      expect(userBlogIds).not.toContain(blogToDelete.id);
     });
 
     test("fails with status 400 if id is invalid", async () => {
