@@ -21,9 +21,7 @@ export function _MUST_BE_LAST_errorHandler(error, _req, res, next) {
   } else if (error.name === "JsonWebTokenError") {
     return res.status(401).json({ error: "Invalid authentication credentials" });
   } else if (error.name === "TokenExpiredError") {
-    return res.status(401).json({
-      error: "Expired token",
-    });
+    return res.status(401).json({ error: "Token is expired. Please login again" });
   }
 
   next(error);
