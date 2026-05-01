@@ -1,0 +1,127 @@
+import { useState, useEffect, useRef } from "react";
+
+import { AddBlogForm } from "./components/add-blog-form.jsx";
+import { Alert } from "./components/alert.jsx";
+import { BlogList } from "./components/blog-list.jsx";
+import { Footer } from "./components/footer.jsx";
+import { LoginForm } from "./components/login-form.jsx";
+import { UserCard } from "./components/user-card.jsx";
+import { loginApi, blogsApi } from "./lib/api.js";
+
+export function App() {
+  const [alert, setAlert] = useState(null);
+  const alertTimeoutIdRef = useRef();
+
+  const notify = (message, { variant = "success" } = {}) => {
+    if (alertTimeoutIdRef.current) {
+      clearTimeout(alertTimeoutIdRef.current);
+    }
+
+    setAlert({ variant, message });
+    const timeoutId = setTimeout(() => setAlert(null), 3500);
+
+    alertTimeoutIdRef.current = timeoutId;
+  };
+
+  const [user, setUser] = useState(() => {
+    const userValue = localStorage.getItem("user");
+    if (!userValue) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(userValue);
+    } catch {
+      return null;
+    }
+  });
+
+  const login = async ({ username, password }) => {
+    try {
+      const data = await loginApi.login({ username, password });
+      const loggedInUser = { username: data.username, name: data.name };
+      setUser(loggedInUser);
+
+      localStorage.setItem("user", JSON.stringify(loggedInUser));
+      localStorage.setItem("token", data.token);
+
+      return { success: true };
+    } catch (error) {
+      notify(error.response.data.error, { variant: "error" });
+
+      return { success: false };
+    }
+  };
+
+  const logout = () => {
+    setUser(null);
+
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+  };
+
+  const [blogs, setBlogs] = useState(null);
+
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+
+    blogsApi.getAll().then(setBlogs);
+  }, [user]);
+
+  const addBlog = async ({ title, author, url }) => {
+    const blogbject = { title, author, url };
+
+    try {
+      const createdBlog = await blogsApi.create(blogbject);
+      setBlogs((prevBlogs) => prevBlogs.concat(createdBlog));
+
+      notify(`New blog "${title}" by "${author}" added`);
+
+      return { success: true };
+    } catch (error) {
+      notify(error.response.data.error, { variant: "error" });
+
+      return { success: false };
+    }
+  };
+
+  return (
+    <>
+      <header>
+        <h1>Fullstack Blogs</h1>
+        {user ? <UserCard user={user} onLogout={logout} /> : null}
+        {alert ? <Alert {...alert} /> : null}
+      </header>
+      <main>
+        {user ? (
+          <>
+            <section>
+              <AddBlogForm onSubmit={addBlog} />
+            </section>
+            <section>
+              {blogs ? (
+                blogs.length ? (
+                  <>
+                    <BlogList blogs={blogs} />
+                  </>
+                ) : (
+                  <p>No blogs found...</p>
+                )
+              ) : (
+                <p>Loading blogs...</p>
+              )}
+            </section>
+          </>
+        ) : (
+          <section>
+            <h2>Login with your username</h2>
+            <LoginForm onSubmit={login} />
+          </section>
+        )}
+      </main>
+      <Footer />
+    </>
+  );
+}

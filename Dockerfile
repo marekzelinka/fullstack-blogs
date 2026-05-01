@@ -16,12 +16,12 @@ COPY . .
 # 1. Install all dependencies
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 # 2. Build the frontend
-# RUN pnpm --filter client build
+RUN pnpm --filter client build
 # 3. Use 'pnpm deploy' to create a standalone server folder
 # This prunes devDeps and flattens workspace links into /prod/server
 RUN pnpm --filter server --prod deploy /prod/server --legacy
 # 4. Manually move the frontend dist into the newly isolated server
-# RUN cp -r apps/client/dist /prod/server/public
+RUN cp -r apps/client/dist /prod/server/public
 
 # --- Stage 2: Final Production Image ---
 FROM base

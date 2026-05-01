@@ -1,0 +1,36 @@
+/* Layout Styles */
+
+header h1 {
+  margin-bottom: 12px;
+  color: green;
+  font-style: italic;
+}
+
+main {
+  margin-top: 24px;
+}
+
+/* Alert Component Styles */
+
+[role="status"].alert {
+  font-size: 20px;
+  border-style: solid;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+
+  &[data-variant="success"] {
+    color: green;
+    background-color: lightgreen;
+  }
+
+  &[data-variant="error"] {
+    color: red;
+    background-color: lightpink;
+  }
+
+  &[data-variant="info"] {
+    color: blue;
+    background-color: lightblue;
+  }
+}
