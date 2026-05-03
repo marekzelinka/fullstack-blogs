@@ -11,7 +11,7 @@ import * as apiTestUtils from "./api-test-utils.js";
 const api = supertest(app);
 
 describe("when there is initially an user seeded with some blogs", () => {
-  let initialFirstUserBlogs;
+  let seededUserBlogs;
 
   beforeEach(async () => {
     // Important: ensure the unique index is synced for the 'already taken' test
@@ -24,8 +24,8 @@ describe("when there is initially an user seeded with some blogs", () => {
       passwordHash,
     });
 
-    initialFirstUserBlogs = apiTestUtils.getInitialBlogs(user._id);
-    const blogs = await Blog.insertMany(initialFirstUserBlogs);
+    seededUserBlogs = apiTestUtils.getInitialBlogs(user._id);
+    const blogs = await Blog.insertMany(seededUserBlogs);
 
     // Link seeded blogs back to the user
     await User.findByIdAndUpdate(user._id, {
@@ -96,12 +96,12 @@ describe("when there is initially an user seeded with some blogs", () => {
       expect(Array.isArray(res.body)).toBe(true);
 
       const seededUser = res.body[0];
-      expect(seededUser.blogs).toHaveLength(initialFirstUserBlogs.length);
+      expect(seededUser.blogs).toHaveLength(seededUserBlogs.length);
 
       const titles = seededUser.blogs.map((blog) => blog.title);
-      const expectedTitles = initialFirstUserBlogs.map((blog) => blog.title);
+      const expectedTitles = seededUserBlogs.map((blog) => blog.title);
       expect(titles).toEqual(expect.arrayContaining(expectedTitles));
-      expect(seededUser.blogs[0].title).toBe(initialFirstUserBlogs[0].title);
+      expect(seededUser.blogs[0].title).toBe(seededUserBlogs[0].title);
     });
 
     test("a specific user is within the returned users", async () => {
