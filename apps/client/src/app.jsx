@@ -71,10 +71,10 @@ export function App() {
   }, [user]);
 
   const addBlog = async ({ title, author, url }) => {
-    const blogbject = { title, author, url };
+    const blogObject = { title, author, url };
 
     try {
-      const createdBlog = await blogsApi.create(blogbject);
+      const createdBlog = await blogsApi.create(blogObject);
       setBlogs((prevBlogs) => prevBlogs.concat(createdBlog));
 
       notify(`New blog "${title}" by "${author}" added`);
