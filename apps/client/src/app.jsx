@@ -88,6 +88,40 @@ export function App() {
     }
   };
 
+  const likeBlog = async (id) => {
+    const existingBlog = blogs.find((blog) => blog.id === id);
+
+    try {
+      const updatedBlog = await blogsApi.like(id);
+      setBlogs((prevBlogs) => prevBlogs.map((blog) => (blog.id === id ? updatedBlog : blog)));
+    } catch {
+      notify(
+        `Blog "${existingBlog.title}" by "${existingBlog.author}"  was already deleted from server`,
+        {
+          variant: "error",
+        },
+      );
+
+      setBlogs((prevBlogs) => prevBlogs.filter((blog) => blog.id !== id));
+    }
+  };
+
+  const deleteBlog = async (id) => {
+    const existingBlog = blogs.find((blog) => blog.id === id);
+
+    try {
+      await blogsApi.delete(id);
+
+      notify(`Deleted "${existingBlog.title}" by "${existingBlog.author}"`, { variant: "info" });
+    } catch {
+      notify(`Note "${existingBlog.content}" was already removed from server`, {
+        variant: "error",
+      });
+    } finally {
+      setBlogs((prevBlogs) => prevBlogs.filter((blog) => blog.id !== id));
+    }
+  };
+
   return (
     <>
       <header>
@@ -109,7 +143,7 @@ export function App() {
               {blogs ? (
                 blogs.length ? (
                   <>
-                    <BlogList blogs={blogs} />
+                    <BlogList blogs={blogs} user={user} onLike={likeBlog} onDelete={deleteBlog} />
                   </>
                 ) : (
                   <p>No blogs found...</p>
