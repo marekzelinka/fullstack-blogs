@@ -5,6 +5,7 @@ import { Alert } from "./components/alert.jsx";
 import { BlogList } from "./components/blog-list.jsx";
 import { Footer } from "./components/footer.jsx";
 import { LoginForm } from "./components/login-form.jsx";
+import { Togglable } from "./components/togglable.jsx";
 import { UserCard } from "./components/user-card.jsx";
 import { loginApi, blogsApi } from "./lib/api.js";
 
@@ -98,9 +99,13 @@ export function App() {
         {user ? (
           <>
             <section>
-              <AddBlogForm onSubmit={addBlog} />
+              <Togglable openButtonLabel="Add New Blog">
+                <h2>Add a New Blog</h2>
+                <AddBlogForm onSubmit={addBlog} />
+              </Togglable>
             </section>
             <section>
+              <h2>Saved Blogs</h2>
               {blogs ? (
                 blogs.length ? (
                   <>
@@ -116,8 +121,10 @@ export function App() {
           </>
         ) : (
           <section>
-            <h2>Login with your username</h2>
-            <LoginForm onSubmit={login} />
+            <Togglable openButtonLabel="User Login">
+              <h2>Login with your username</h2>
+              <LoginForm onSubmit={login} />
+            </Togglable>
           </section>
         )}
       </main>

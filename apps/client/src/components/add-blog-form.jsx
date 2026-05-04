@@ -36,7 +36,7 @@ export function AddBlogForm({ onSubmit }) {
         <input type="url" name="url" id={`${formId}-url`} required />
       </div>
       <div>
-        <button type="submit">Create</button>
+        <button type="submit">Add New</button>
       </div>
     </form>
   );
