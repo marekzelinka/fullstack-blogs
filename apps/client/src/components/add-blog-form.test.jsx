@@ -23,6 +23,45 @@ test("calls event handler on submit", async () => {
   expect(onSubmit).toHaveBeenCalled(MOCK_BLOG);
 });
 
+test("author is not required to submit", async () => {
+  const onSubmit = vi.fn(() => ({ success: true }));
+
+  const screen = await render(<AddBlogForm onSubmit={onSubmit} />);
+
+  await screen.getByLabelText(/title/i).fill(MOCK_BLOG.title);
+  await screen.getByLabelText(/url/i).fill(MOCK_BLOG.url);
+
+  await screen.getByRole("button", { name: /new blog/i }).click();
+
+  expect(onSubmit).toHaveBeenCalled(MOCK_BLOG);
+});
+
+test("does not call event handler when title is missing", async () => {
+  const onSubmit = vi.fn(() => ({ success: true }));
+
+  const screen = await render(<AddBlogForm onSubmit={onSubmit} />);
+
+  await screen.getByLabelText(/author/i).fill(MOCK_BLOG.author);
+  await screen.getByLabelText(/url/i).fill(MOCK_BLOG.url);
+
+  await screen.getByRole("button", { name: /new blog/i }).click();
+
+  expect(onSubmit).toHaveBeenCalledTimes(0);
+});
+
+test("does not call event handler when url is missing", async () => {
+  const onSubmit = vi.fn(() => ({ success: true }));
+
+  const screen = await render(<AddBlogForm onSubmit={onSubmit} />);
+
+  await screen.getByLabelText(/title/i).fill(MOCK_BLOG.title);
+  await screen.getByLabelText(/author/i).fill(MOCK_BLOG.author);
+
+  await screen.getByRole("button", { name: /new blog/i }).click();
+
+  expect(onSubmit).toHaveBeenCalledTimes(0);
+});
+
 test("resets form inputs on success", async () => {
   const onSubmit = vi.fn(() => ({ success: true }));
 
