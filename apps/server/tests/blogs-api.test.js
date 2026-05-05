@@ -150,7 +150,7 @@ describe("when there are initially some blogs seeded with a owner", () => {
     });
 
     test("fails with status 404 if blog does not exist", async () => {
-      const validNonexistingId = await apiTestUtils.getNonExistingBlogId(user._id);
+      const validNonexistingId = await apiTestUtils.getValidNonExistingBlogId(user._id);
 
       const res = await api.post(`/api/blogs/${validNonexistingId}/likes`).set(authHeader);
       expect(res.status).toBe(404);
@@ -193,7 +193,7 @@ describe("when there are initially some blogs seeded with a owner", () => {
       });
 
       test("fails with status 400 if id is invalid", async () => {
-        const invalidId = "5a3d5da59070081a82a3445";
+        const invalidId = "1";
 
         const res = await api.get(`/api/blogs/${invalidId}`);
         expect(res.status).toBe(400);
@@ -202,7 +202,7 @@ describe("when there are initially some blogs seeded with a owner", () => {
       });
 
       test("fails with status 404 if blog does not exist", async () => {
-        const validNonexistingId = await apiTestUtils.getNonExistingBlogId(user._id);
+        const validNonexistingId = await apiTestUtils.getValidNonExistingBlogId(user._id);
 
         const res = await api.get(`/api/blogs/${validNonexistingId}`);
         expect(res.status).toBe(404);
@@ -263,7 +263,7 @@ describe("when there are initially some blogs seeded with a owner", () => {
     });
 
     test("fails with status 400 if id is invalid", async () => {
-      const invalidId = "5a3d5da59070081a82a3445";
+      const invalidId = "1";
 
       const res = await api.patch(`/api/blogs/${invalidId}`).set(authHeader).send({});
       expect(res.status).toBe(400);
@@ -300,7 +300,7 @@ describe("when there are initially some blogs seeded with a owner", () => {
     });
 
     test("fails with status 404 if blog does not exist", async () => {
-      const validNonexistingId = await apiTestUtils.getNonExistingBlogId(user._id);
+      const validNonexistingId = await apiTestUtils.getValidNonExistingBlogId(user._id);
 
       const res = await api.patch(`/api/blogs/${validNonexistingId}`).set(authHeader).send({});
       expect(res.status).toBe(404);
@@ -310,7 +310,7 @@ describe("when there are initially some blogs seeded with a owner", () => {
   });
 
   describe("deletion of a blog", () => {
-    test("succeeds with status 204 when owned by user", async () => {
+    test("succeeds when owned by user", async () => {
       const blogsAtStart = await apiTestUtils.getBlogsInDb();
       const blogToDelete = blogsAtStart[0];
 
@@ -329,7 +329,7 @@ describe("when there are initially some blogs seeded with a owner", () => {
     });
 
     test("fails with status 400 if id is invalid", async () => {
-      const invalidId = "5a3d5da59070081a82a3445";
+      const invalidId = "1";
 
       const res = await api.delete(`/api/blogs/${invalidId}`).set(authHeader);
       expect(res.status).toBe(400);
@@ -359,6 +359,15 @@ describe("when there are initially some blogs seeded with a owner", () => {
       expect(res.status).toBe(403);
       expect(res.headers["content-type"]).toMatch(/json/);
       expect(res.body.error).toMatch(/only the owner can delete this blog/i);
+    });
+
+    test("fails with status 404 if blog does not exist", async () => {
+      const validNonexistingId = await apiTestUtils.getValidNonExistingBlogId(user._id);
+
+      const res = await api.delete(`/api/blogs/${validNonexistingId}`).set(authHeader);
+      expect(res.status).toBe(404);
+      expect(res.headers["content-type"]).toMatch(/json/);
+      expect(res.body.error).toMatch(/blog not found/i);
     });
   });
 
@@ -428,7 +437,7 @@ describe("when there are initially some blogs seeded with a owner", () => {
     });
 
     test("fails with status 404 if blog does not exist", async () => {
-      const validNonexistingId = await apiTestUtils.getNonExistingBlogId(user._id);
+      const validNonexistingId = await apiTestUtils.getValidNonExistingBlogId(user._id);
 
       const res = await api.delete(`/api/blogs/${validNonexistingId}/likes`).set(authHeader);
       expect(res.status).toBe(404);

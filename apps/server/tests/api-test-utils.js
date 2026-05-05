@@ -20,7 +20,7 @@ export function getInitialBlogs(userId) {
   ];
 }
 
-export async function getNonExistingBlogId(userId) {
+export async function getValidNonExistingBlogId(userId) {
   const blog = new Blog({
     title: "willremovethissoon",
     author: "willremovethissoon",
