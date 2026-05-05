@@ -3,13 +3,6 @@ import { useReducer } from "react";
 
 const getShowWhenVisibleStyles = (visible) => ({ display: visible ? undefined : "none" });
 
-const cardStyles = {
-  paddingBlock: 10,
-  paddingInline: 5,
-  border: "solid",
-  borderWidth: 1,
-  borderRadius: 4,
-};
 const inlineRowStyles = {
   display: "flex",
   alignItems: "center",
@@ -22,7 +15,15 @@ export function BlogCard({ blog, isOwner, onLike, onDelete }) {
   const contentId = useId();
 
   return (
-    <div style={cardStyles}>
+    <div
+      style={{
+        paddingBlock: 10,
+        paddingInline: 5,
+        border: "solid",
+        borderWidth: 1,
+        borderRadius: 4,
+      }}
+    >
       <div style={inlineRowStyles}>
         <span>{blog.title}</span> <span>by</span> <span>{blog.author}</span>{" "}
         <button
@@ -35,29 +36,31 @@ export function BlogCard({ blog, isOwner, onLike, onDelete }) {
         </button>
       </div>
       <div id={contentId} style={getShowWhenVisibleStyles(visible)}>
-        <div>{blog.url}</div>
+        <span>{blog.url}</span>
         <div style={inlineRowStyles}>
           <span>
             {blog.likes} {`like${blog.likes === 1 ? "" : "s"}`}
           </span>{" "}
-          <button type="button" onClick={onLike}>
+          <button type="button" onClick={() => onLike(blog.id)}>
             Like
           </button>
         </div>
-        <div>{blog.owner.name ?? blog.owner.username}</div>
-        {isOwner ? (
-          <button
-            type="button"
-            onClick={() => {
-              const shouldDelete = confirm(`Remove blog "${blog.title}" by "${blog.author}"?`);
-              if (shouldDelete) {
-                onDelete();
-              }
-            }}
-          >
-            Delete
-          </button>
-        ) : null}
+        <div style={inlineRowStyles}>
+          <span>{blog.owner.name ?? blog.owner.username}</span>
+          {isOwner ? (
+            <button
+              type="button"
+              onClick={() => {
+                const shouldDelete = confirm(`Remove blog "${blog.title}" by "${blog.author}"?`);
+                if (shouldDelete) {
+                  onDelete(blog.id);
+                }
+              }}
+            >
+              Delete
+            </button>
+          ) : null}
+        </div>
       </div>
     </div>
   );

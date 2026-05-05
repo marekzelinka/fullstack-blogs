@@ -22,6 +22,8 @@ jobs:
         run: |
           pnpm run lint
           pnpm run fmt:check
+      - name: Install Playwright Browsers
+        run: pnpm --filter client exec playwright install --with-deps chromium
       - name: Run Tests
         run: pnpm vitest run
         env:

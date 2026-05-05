@@ -9,6 +9,8 @@ import { Togglable } from "./components/togglable.jsx";
 import { UserCard } from "./components/user-card.jsx";
 import { loginApi, blogsApi } from "./lib/api.js";
 
+const NOTIFY_DEFAULT_TIMEOUT = 3500;
+
 export function App() {
   const [alert, setAlert] = useState(null);
   const alertTimeoutIdRef = useRef();
@@ -19,7 +21,7 @@ export function App() {
     }
 
     setAlert({ variant, message });
-    const timeoutId = setTimeout(() => setAlert(null), 3500);
+    const timeoutId = setTimeout(() => setAlert(null), NOTIFY_DEFAULT_TIMEOUT);
 
     alertTimeoutIdRef.current = timeoutId;
   };
@@ -59,16 +61,27 @@ export function App() {
 
     localStorage.removeItem("user");
     localStorage.removeItem("token");
+
+    // TODO: After adding router, we will probably not need this
+    window.location.href = "/";
   };
 
   const [blogs, setBlogs] = useState(null);
+  const blogFormRef = useRef();
 
   useEffect(() => {
     if (!user) {
       return;
     }
 
-    blogsApi.getAll().then(setBlogs);
+    blogsApi
+      .getAll()
+      .then(setBlogs)
+      .catch((error) => {
+        notify(error.response.data.error, { variant: "error" });
+
+        setTimeout(logout, NOTIFY_DEFAULT_TIMEOUT);
+      });
   }, [user]);
 
   const addBlog = async ({ title, author, url }) => {
@@ -79,6 +92,7 @@ export function App() {
       setBlogs((prevBlogs) => prevBlogs.concat(createdBlog));
 
       notify(`New blog "${title}" by "${author}" added`);
+      blogFormRef.current.toggleVisibility();
 
       return { success: true };
     } catch (error) {
@@ -133,7 +147,7 @@ export function App() {
         {user ? (
           <>
             <section>
-              <Togglable openButtonLabel="Add New Blog">
+              <Togglable ref={blogFormRef} openButtonLabel="Add new blog">
                 <h2>Add a New Blog</h2>
                 <AddBlogForm onSubmit={addBlog} />
               </Togglable>
@@ -155,7 +169,7 @@ export function App() {
           </>
         ) : (
           <section>
-            <Togglable openButtonLabel="User Login">
+            <Togglable openButtonLabel="Login to view blogs">
               <h2>Login with your username</h2>
               <LoginForm onSubmit={login} />
             </Togglable>

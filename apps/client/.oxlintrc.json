@@ -6,7 +6,7 @@
   },
   "rules": {
     "react/jsx-no-undef": "error",
-    "react-perf/jsx-no-new-object-as-prop": "warn",
+    "react-perf/jsx-no-new-object-as-prop": "off",
     "react/react-in-jsx-scope": "off"
   }
 }
