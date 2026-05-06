@@ -1,4 +1,4 @@
-name: CI/CD
+name: CI/CD Pipeline
 
 on:
   push:
@@ -16,6 +16,11 @@ jobs:
         with:
           node-version: 25
           cache: "pnpm"
+      - name: Cache MongoDB Binary
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/mongodb-binaries
+          key: ${{ runner.os }}-mongodb-${{ hashFiles('**/package.json') }}
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Lint and Format
@@ -25,10 +30,14 @@ jobs:
       - name: Install Playwright Browsers
         run: pnpm --filter client exec playwright install --with-deps chromium
       - name: Run Tests
-        run: pnpm vitest run
+        run: pnpm run test
         env:
+          # Note: mongodb-memory-server usually doesn't need MONGODB_URI
+          # as it generates its own, but keeping for your app logic
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          # Force the memory server to use the cached path
+          MONGOMS_DOWNLOAD_DIR: ~/.cache/mongodb-binaries
 
   deploy:
     needs: quality-gate

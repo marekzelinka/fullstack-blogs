@@ -14,7 +14,7 @@ test("calls event handler on submit", async () => {
 
   await screen.getByRole("button", { name: /login/i }).click();
 
-  expect(onSubmit).toHaveBeenCalled(testCredentials);
+  expect(onSubmit).toHaveBeenCalledWith(testCredentials);
 });
 
 test("resets the form inputs on success", async () => {

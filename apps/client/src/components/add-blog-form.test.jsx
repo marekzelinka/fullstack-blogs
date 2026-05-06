@@ -20,7 +20,7 @@ test("calls event handler on submit", async () => {
 
   await screen.getByRole("button", { name: /new blog/i }).click();
 
-  expect(onSubmit).toHaveBeenCalled(MOCK_BLOG);
+  expect(onSubmit).toHaveBeenCalledWith(MOCK_BLOG);
 });
 
 test("author is not required to submit", async () => {
@@ -33,7 +33,7 @@ test("author is not required to submit", async () => {
 
   await screen.getByRole("button", { name: /new blog/i }).click();
 
-  expect(onSubmit).toHaveBeenCalled(MOCK_BLOG);
+  expect(onSubmit).toHaveBeenCalledWith({ ...MOCK_BLOG, author: "" });
 });
 
 test("does not call event handler when title is missing", async () => {

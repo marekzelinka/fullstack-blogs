@@ -1,7 +1,7 @@
 import { test, vi, expect } from "vitest";
 import { render } from "vitest-browser-react";
 
-import { BlogCard } from "./blog-card.tsx";
+import { BlogCard } from "./blog-card.jsx";
 
 const MOCK_BLOG = {
   id: "69f4d84da6568a97bd8d333a",
